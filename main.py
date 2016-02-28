@@ -2,8 +2,7 @@ import pickle
 import reader
 import simpleClassifier
 # import nltkClassifier
-import NBClassifier
-# import nltk
+# import NBClassifier
 import sys
 from sys import stdin
 

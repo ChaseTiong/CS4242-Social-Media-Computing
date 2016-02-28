@@ -10,7 +10,6 @@ class Classifier:
     __stopWords = []
     __featureList = []
 
-
     # def __init__(self, variable):
     #     __variable = variable
     def getClassifier(self):
