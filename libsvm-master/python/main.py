@@ -4,60 +4,65 @@ import SVMClassifier, simpleClassifier, NBClassifier
 import time
 
 def main():
-	print "Preparing data..."
-	# Append the tweets to the CSV file
-	reader.appendTweets('data/training.csv', 'data/output/training-with-tweets.csv')
+	path_to_training_data = "data/training.csv"
+	path_to_testing_data = "data/testing.csv"
 
-	# Remove ambiguous information
-	trainingTweets = reader.readTweets('data/output/training-with-tweets.csv', 'data/output/training-trimmed.csv')
+	SVM_output_file = "data/output/SVMResult.csv"
+	NB_output_file = "data/output/NaiveBayesResult-2.csv"
+	Smpl_output_file = "data/output/SimpleResult.csv"
 
-	print "Instantiating SVM classifier..."
-	# Instantiate classifier
-	svm_c = SVMClassifier.SVMClassifier()
-	svm_c.prepareHelper(trainingTweets)
+	runSVM = True
+	runSimple = True
+	runNB = True
 
-	print "Training SVM classifier..."
-	# Train classifier
-	svm_c.train(trainingTweets)
+	print "Getting data..."
+	trainingTweets = reader.getTweets(path_to_training_data)
+	testingTweets = reader.getTweets(path_to_testing_data)
 
-	print "Preparing test data..."
-	# Prepare testing data by appending tweets to the CSV file
-	reader.appendTweets('data/testing.csv', 'data/output/testing-with-tweets.csv')
-	# Get the data from the test file and remove ambiguous information
-	testTweets = reader.readTweets('data/output/testing-with-tweets.csv', 'data/output/testing-trimmed.csv')
+	if runSVM:
+		print "Instantiating SVM Classifier..."
+		svm_c = SVMClassifier.SVMClassifier()
+		svm_c.prepareHelper(trainingTweets)
 
-	print "Classifying test data using SVM..."
-	# Run the classifier on the test data
-	svm_c.classify(testTweets, 'data/output/SVMResult.csv')
+		print "Training SVM Classifier..."
+		svm_c.train(trainingTweets)
 
-	print "Instantiating simple classifier..."
-	simple_c = simpleClassifier.Classifier("data/lexicon/pos.txt", "data/lexicon/neg.txt")
-	
-	print "Classifying test data using Simple Classifier..."
-	simple_c.classifyDataset(testTweets, 'data/output/SimpleResult.csv')
-	
-	print "Instantiating Naive Bayes classifier..."
-	NaiveBayes_c = NBClassifier.NBClassifier()
+		print "Classifying testing data using SVM..."
+		svm_c.classify(testingTweets, SVM_output_file)
 
-	print "Training Naive Bayes classifier..."
-	NaiveBayes_c.train(trainingTweets)
+	if runSimple:
+		print "Instantiating Simple Classifier..."
+		simple_c = simpleClassifier.Classifier("data/lexicon/pos.txt", "data/lexicon/neg.txt")
+		
+		print "Classifying test data using Simple Classifier..."
+		simple_c.classifyDataset(testingTweets, Smpl_output_file)
 
-	print "Classifying test data using Naive Bayes classifier..."
-	NaiveBayes_c.classifyDataset(testTweets, 'data/output/NaiveBayesResult.csv')
+	if runNB:
+		print "Instantiating Naive Bayes Classifier..."
+		NaiveBayes_c = NBClassifier.NBClassifier()
+
+		NaiveBayes_c.train(trainingTweets)
+
+		print "Classifying dataset using Naive Bayes Classifier..."
+		NaiveBayes_c.classifyDataset(testingTweets, NB_output_file)
 
 	print "Getting stats..."
 
 	print "\n"
-	print "-------- Naive Bayes Stats --------"
-	reader.getStats("data/output/NaiveBayesResult.csv")
+	print "------------- Naive Bayes Stats -------------"
+	reader.getStats(NB_output_file, "data/output/NBdata.csv", "NB")
 	print "\n"
 
-	print "------------ SVM Stats ------------"
-	reader.getStats("data/output/SVMResult.csv")
+	print "----------------- SVM Stats -----------------"
+	reader.getStats(SVM_output_file, "data/output/SVMdata.csv", "SVM")
 	print "\n"
 
-	print "----- Simple Classifier Stats -----"
-	reader.getStats("data/output/SimpleResult.csv")
+	print "---------- Simple Classifier Stats ----------"
+	reader.getStats(Smpl_output_file, "data/output/SMPLdata.csv", "Simple")
+	print "\n"
+
+	print "------------ Random Forest Stats ------------"
+	reader.getStats("data/output/RFResult.csv", "data/output/RFdata.csv", "RF")
 	print "\n"
 
 start_time = time.time()
