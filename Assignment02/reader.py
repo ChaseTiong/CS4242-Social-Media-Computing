@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import sys
-# import csv
 import json
 import os, os.path
 import re
@@ -74,8 +73,8 @@ def readData(user, helper, path_to_data):
 				tweet_data = json.load(open(path_to_tweets+"/"+twitterJsonFile))
 				for i in range(0, len(tweet_data)-1):
 					if(tweet_data[i]["in_reply_to_status_id"]!=None):
-						# tweetTexts.append(helper.clean(tweet_data[i]["text"]))
-						tweetTexts.append(helper.easyClean(tweet_data[i]["text"]))
+						if(tweet_data[i]["lang"]=="en"):
+							tweetTexts.append(helper.removeStopwords(helper.stem(helper.easyClean(tweet_data[i]["text"]))))
 			except:
 				pass
 	

@@ -1,0 +1,8 @@
+<h1>World Trends</h1>
+
+<center><div ng-show="trendingTopics() == undefined">Loading twitter <center>data... </div></center>
+<div class="worldTrendsContainer">
+	<div ng-repeat="trend in trendingTopics()" class="trendingTopic">
+		<a href="{{trend.url}}" target="_blank" class="topicLink"> {{ trend.name }} </a>
+	</div>
+</div>

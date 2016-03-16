@@ -10,10 +10,11 @@ import time
 import svm
 from svmutil import *
 import re
+import json
 
 def main():
-	extractData = True
-	extractTestingData = True
+	extractData = False
+	extractTestingData = False
 	helper = helperClass.Helper()
 	path_to_training_directory = "data/Train"
 	path_to_testing_directory = "data/Test"
@@ -48,8 +49,11 @@ def main():
 		sys.stdout.flush()
 
 	print "\n"+str(len(allWords))+" unique words found.\n"
-	
+	# print allWords
 	helper.setFeatureList(sorted(allWords))
+	
+	with open('allWords.txt', 'w') as outfile:
+		json.dump(sorted(allWords), outfile)
 
 	featureVectors = []
 	print "Generating feature vectors..."
@@ -105,14 +109,18 @@ def main():
 
 	print "\r"
 	labelVectors = helper.getLabelVectors(path_to_testing_labels)
+	
 	avgAcc = 0.0
+	labelContainer = []
 	print "Classifying dataset..."
 	for i in range(0, len(models)):
 		p_labels, p_accs, p_vals = svm_predict(labelVectors[i], featureVectors, models[i])
+		labelContainer.append(p_labels)
 		avgAcc = avgAcc+p_accs[0]
 
 	avgAcc = avgAcc/(len(models))
 	print "Average accuracy: "+str(avgAcc)+"%"
+	pickle.dump(labelContainer, open("outputLabels.pkl", "wb"))
 	# p_labels, p_accs, p_vals = svm_predict(labelVectors[0], featureVectors, model)
 
 

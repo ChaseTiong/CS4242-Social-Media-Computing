@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 from nltk.stem.lancaster import LancasterStemmer
+from nltk.stem.porter import PorterStemmer
 from pprint import pprint
 
 class Helper:
@@ -57,16 +58,18 @@ class Helper:
 		text = re.sub('(\s\d{1,}\s)', ' ',text) # Remove digits surrounded by spaces
 		text = re.sub('\d{0,3}?\.?\:?\d{0,2}[ap]m', '',text) # Remove times
 		text = re.sub('\s\S\s', ' ', text) # Remove single character "words"
-		text = re.sub('(?<=\s)\d*?(?=\s)', ' ',text) # Remove digits without context
+		text = re.sub('(?<=\s)\w*?\d\w*?(?=\s)', '', text)
+		# text = re.sub('(?<=\s)\d*?(?=\s)', ' ',text) # Remove digits without context
 		text = re.sub('\s{2,}', ' ', text) # Remove extraneous spaces
 		return text
 
 	def stem(self, text):
-		# text = text.split()
-		# for i in range(0, len(text)):
-		# 	text[i] = LancasterStemmer().stem(text[i])
-		# stemmedText = " ".join(text)
-		# return stemmedText
+		text = text.split()
+		for i in range(0, len(text)):
+			# text[i] = LancasterStemmer().stem(text[i])
+			text[i] = PorterStemmer().stem(text[i])
+		stemmedText = " ".join(text)
+		return stemmedText
 		return text
 
 	def getUserWords(self, userData):
