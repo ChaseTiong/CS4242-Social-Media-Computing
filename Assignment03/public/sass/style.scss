@@ -1,0 +1,122 @@
+$font-stack: 'Lato', Sans-Serif;
+$gray-color: #3B4142;
+$white-color: #fafafa;
+$black-color: #2D2D2D;
+$red-color: #DE3A3A;
+$header-height:75px;
+$footer-height:50px;
+
+html, body{
+	height:100%;
+}
+
+body {
+	font-family: Sans-Serif;
+	font-weight:100;
+}
+
+h1 {
+	text-align: center;
+	font-family: $font-stack;
+	font-weight: 900;
+}
+
+.trendingTopic {
+	display:inline-block;
+	padding:20px;
+	width:33%;
+	text-align: center;
+	font-size:16px;
+	box-sizing:border-box;
+	min-width:20px;
+}
+
+.worldTrendsContainer{
+	text-align: center;
+	font-size:0;
+}
+
+a {
+	color:$black-color;
+	text-decoration: none;
+}
+
+#worldMap{
+	position:relative;
+	width:100%;
+}
+
+.mapContainer {
+	width:100%;
+	max-width:650px;
+	display:block;
+	margin:auto;
+}
+
+
+header {
+	background-color:$gray-color;
+	color: $white-color;
+	overflow: auto;
+	height:$header-height;
+}
+
+footer {
+    background-color: $gray-color;
+    text-align: center;
+    color: $white-color;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-top:40px;
+    height:$footer-height;
+    margin-top:$footer-height*-1;
+}
+
+.headerLinks {
+	float:right;
+	padding:20px;
+	box-sizing:border-box;
+	height:100%;
+	max-height:100%;
+	max-width:50%;
+}
+
+.headerLinks a img {
+	max-height:100%;
+	max-width:100%;
+}
+
+.headerTitle {
+	float:left;
+	font-family:$font-stack;
+	font-size:24px;
+	padding:24px;
+	font-weight:bold;
+	box-sizing:border-box;
+}
+
+.status{
+	display: block;
+    margin: auto;
+    width: 75%;
+    padding: 5%;
+    text-align: center;
+    img {
+    	display:block;
+    	margin:auto;
+		width:75px;
+		padding:20px;
+    }
+}
+.error {
+	@extend .status;
+	background-color:$red-color;
+	color:$white-color;
+}
+
+.pageWrap {
+ 	min-height:100%;
+ 	padding-bottom:$footer-height+20px;
+ 	box-sizing:border-box;
+  	// margin-bottom: $footer-height;
+}

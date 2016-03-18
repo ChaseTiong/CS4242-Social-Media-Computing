@@ -1,4 +1,5 @@
 var app = angular.module('cs4242', ['ngRoute','ngResource']);
+
 // app.config(['$routeProvider',
 //   function($routeProvider) {
 //     $routeProvider.

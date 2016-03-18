@@ -6,9 +6,9 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" minimal-ui>
 
-		<link href='http://fonts.googleapis.com/css?family=Roboto:100,300,700|Raleway:200,400|Open+Sans:100,400,700|Lato:400,800' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Roboto:100,300,700|Raleway:200,400|Open+Sans:100,400,700|Lato:400,900' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="/libraries/normalize.css/normalize.css" />
-		<link rel="stylesheet" type="text/css" href="style.css" />
+		<link rel="stylesheet" type="text/css" href="style/style.css" />
 
 		<script src="/libraries/angular/angular.min.js"></script>
 		<script src="/libraries/angular-route/angular-route.min.js"></script>
@@ -25,19 +25,22 @@
 
 	</head>
 	<body ng-controller="AppCtrl">
-		<header>
-			<div class="mainHeading">
-				CS3240 Assignment03
-			</div>
-			<div class="groupNumber">
-				Group 7
-			</div>
-		</header>
-		<div ng-include="'templates/worldMap.html'" onLoad="initializeMap()" class="mapContainer"></div>
-		<div class="container" id="container" ng-view></div>
-		<div ng-include="'templates/worldTrends.html'" onLoad="getTwitterData()"></div>
-		<div class="footer">
-			Group 7 - Rickard Bergeling &amp; Kankan Zhou
+		<div class="pageWrap">
+			<header>
+				<div class="headerTitle">
+					CS3240 Assignment03
+				</div>
+				<div class="headerLinks">
+					<a href="https://github.com/HerrR/CS4242-Social-Media-Computing/tree/master/Assignment03" target="_blank"><img src="img/github-icon.png"/></a>
+				</div>
+			</header>
+			
+			<div ng-include="'templates/map.html'" onLoad="initializeMap()" class="mapContainer"></div>
+			<div class="container" id="container" ng-view></div>
+			<div ng-include="'templates/trends.html'" onLoad="getTwitterData('World')"></div>
 		</div>
+		<footer>
+			Group 7 - Rickard Bergeling &amp; Kankan Zhou
+		</footer>
 	</body>
 </html>

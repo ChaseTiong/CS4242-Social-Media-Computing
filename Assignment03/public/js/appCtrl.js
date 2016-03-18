@@ -1,7 +1,15 @@
 app.controller('AppCtrl', function ($scope, Model) {
-	$scope.getTwitterData = function(){
-		Model.getPopular();
+	$scope.getTwitterData = function(query){
+		Model.getPopular(query);
 	}
+
+    $scope.loadingTrends = function(){
+        return Model.loadingTrends();
+    }
+
+    $scope.errorStatus = function(){
+        return Model.getErrorStatus();
+    }
 
 	$scope.trendingTopics = function(){
 		return Model.getTrendingTopics();
@@ -13,20 +21,15 @@ app.controller('AppCtrl', function ($scope, Model) {
         responsive: true,
         done: function(datamap) {
     		datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-    			console.log(geography)
+                // Click Event
+                Model.getPopular(geography.properties.name);
     		});
 		}
     });
 
-    // // Pure JavaScript
-    // window.addEventListener('resize', function() {
-    //     map.resize();
-    // });
-
-    // // Alternatively with d3
-    // d3.select(window).on('resize', function() {
-    //     map.resize();
-    // });
+    $scope.showingTrends = function(){
+        return Model.activeTopic();
+    }
 
     // Alternatively with jQuery
     $(window).on('resize', function() {
