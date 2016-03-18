@@ -12,6 +12,7 @@
 
 		<script src="/libraries/angular/angular.min.js"></script>
 		<script src="/libraries/angular-route/angular-route.min.js"></script>
+		<script src="/libraries/angular-cookies/angular-cookies.min.js"></script>
 		<script src="/libraries/angular-resource/angular-resource.min.js"></script>
 	    <script src="/libraries/jquery/dist/jquery.min.js"></script>
 
@@ -22,11 +23,22 @@
 	    <script src="js/app.js"></script>
 	    <script src="js/modelService.js"></script>
 		<script src="js/appCtrl.js"></script>
+		<script src="js/viewControllers.js"></script>
 
 	</head>
 	<body ng-controller="AppCtrl">
+		<div id="menu" ng-class="{'open':menuOpen}">
+			<ul>
+				<div ng-show="loggedIn()" class="loggedInAs">Logged in as <b>{{ loggedInUser() }}</b> </div>
+				<li ng-show="loggedIn()"><a ng-href="/#/" ng-click="closeMenu()">Home</a></li>
+				<li ng-hide="loggedIn()"><a ng-href="/#/login" ng-click="closeMenu()">Login</a></li>
+				<li ng-hide="loggedIn()"><a ng-href="/#/register" ng-click="closeMenu()">Register</a></li>
+				<li ng-show="loggedIn()"><a ng-href="/#/" ng-click="logout()">Logout</a></li>
+			</ul>
+		</div>
 		<div class="pageWrap">
 			<header>
+				<img src="img/menu-icon.png" id="menuIcon" ng-click="toggleMenu()"/>
 				<div class="headerTitle">
 					CS3240 Assignment03
 				</div>
@@ -34,10 +46,7 @@
 					<a href="https://github.com/HerrR/CS4242-Social-Media-Computing/tree/master/Assignment03" target="_blank"><img src="img/github-icon.png"/></a>
 				</div>
 			</header>
-			
-			<div ng-include="'templates/map.html'" onLoad="initializeMap()" class="mapContainer"></div>
-			<div class="container" id="container" ng-view></div>
-			<div ng-include="'templates/trends.html'" onLoad="getTwitterData('World')"></div>
+			<div id="container" ng-view></div>
 		</div>
 		<footer>
 			Group 7 - Rickard Bergeling &amp; Kankan Zhou

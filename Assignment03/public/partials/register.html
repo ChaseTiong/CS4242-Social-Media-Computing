@@ -1,0 +1,15 @@
+<div class="loginBox">
+	<h1>Register</h1>
+	<div class="loginForm">
+		<form novalidate class="form">
+			<input type="text" ng-model="user.name" placeholder="Username" class="inputField"/><br />
+			<input type="password" ng-model="user.password" placeholder="Password" class="inputField"/><br />
+			<input type="password" ng-model="user.repeatedPassword" placeholder="Repeat your password" class="inputField"/><br />
+			<input type="submit" ng-click="register(user)" value="Register" class="button fullWidth"/>
+		</form>
+	</div>
+</div>
+
+<div class="loginErrorContainer">
+	<div ng-show="errorStatus != false" class="status error">{{errorStatus}}</div>
+</div>

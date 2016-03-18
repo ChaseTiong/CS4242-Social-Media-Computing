@@ -1,39 +1,34 @@
-app.controller('AppCtrl', function ($scope, Model) {
-	$scope.getTwitterData = function(query){
-		Model.getPopular(query);
-	}
+app.controller('AppCtrl', function ($scope, $rootScope, $cookies, $location, Model) {
+    $scope.menuOpen = false;
 
-    $scope.loadingTrends = function(){
-        return Model.loadingTrends();
+    $scope.closeMenu = function(){
+        $scope.menuOpen = false;
     }
 
-    $scope.errorStatus = function(){
-        return Model.getErrorStatus();
+    $scope.toggleMenu = function(){
+        if($scope.menuOpen){
+            $scope.menuOpen = false;
+        } else {
+            $scope.menuOpen = true;
+        }
     }
 
-	$scope.trendingTopics = function(){
-		return Model.getTrendingTopics();
-	}
-
-	$scope.initializeMap = function(){
-		var map = new Datamap({
-        element: document.getElementById('worldMap'),
-        responsive: true,
-        done: function(datamap) {
-    		datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-                // Click Event
-                Model.getPopular(geography.properties.name);
-    		});
-		}
-    });
-
-    $scope.showingTrends = function(){
-        return Model.activeTopic();
+    $scope.loggedIn = function(){
+        if($rootScope.loggedInUser == undefined){
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    // Alternatively with jQuery
-    $(window).on('resize', function() {
-       map.resize();
-	});
-	}
+    $scope.logout = function(){
+        delete $rootScope.loggedInUser;
+        $cookies.remove("user");
+        $scope.closeMenu();
+        $location.path("/login");
+    }
+
+    $scope.loggedInUser = function(){
+        return $rootScope.loggedInUser;
+    }
 });

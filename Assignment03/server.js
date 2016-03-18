@@ -3,6 +3,7 @@ var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
 var Twitter = require('twitter');
+var MySql = require('mysql');
 
 var app = express();
 var lastRequest = null;
@@ -14,6 +15,18 @@ var twitterClient = new Twitter({
   access_token_key: '616422343-QxppVIi6s143vV2yc1KGQk6JV79G0kRK5GzDOOw1',
   access_token_secret: 'zMsu8dBKfkSvz8oWhKaoG4PHt0ptAuEpw7HYl2lNdhNVi'
 });
+
+var dbConnection = MySql.createConnection({
+  port: 8889,
+  host: "localhost",
+  database: "CS4242",
+  user: "root",
+  password: "root"
+});
+
+dbConnection.connect(function(err){
+  if(err) console.log(err);
+})
 
 app.set('port', (process.env.PORT || 3000));
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -28,9 +41,64 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.post('/api/register', function(req, res){
+  var userData = JSON.parse(req.query.user);
+  var returnObject = {duplicateUsers: "Unknown", successfulUpdate: false};
+
+  var statement = "SELECT * FROM users WHERE username = '"+userData.name+"';";
+  dbConnection.query(statement, function(err, result) {
+    if(result.length > 0){
+      returnObject.duplicateUsers = true;
+      res.json(returnObject);
+    } else {
+      returnObject.duplicateUsers = false;
+
+      var statement = "INSERT INTO users (username, password) VALUES ('"+userData.name+"', '"+userData.password+"');";
+      dbConnection.query(statement, function(err, result){
+        if(err){
+          console.log(err);
+          returnObject.successfulUpdate = false;
+        } else {
+          // console.log(result);
+          returnObject.successfulUpdate = true;
+        }
+        res.json(returnObject);
+      });
+    }
+  });
+});
+
+app.post("/api/login", function(req, res){
+  var credentials = JSON.parse(req.query.credentials);
+  var statement = "SELECT count(*) FROM users WHERE username = "+dbConnection.escape(credentials.username)+" and password = "+dbConnection.escape(credentials.password)+";";
+
+  dbConnection.query(statement, function(err, result){
+    if(err){
+      console.log(err);
+      res.json(err);
+    } else {
+      if(result[0]['count(*)']==1){
+        res.json({success: true});
+      } else {
+        res.json({success: false});
+      }
+    }
+  })
+});
+
+app.get('/api/tweets', function(req, res){
+  var params = {q: req.query.q, count:15, type:"popular"};
+  twitterClient.get('search/tweets', params, function(error, tweets, response){
+    if(error){
+      console.log(error);
+    }
+    res.json(tweets);
+  });
+});
+
 app.get('/api/trending', function(req, res){
   var updateThreshold = 1800;
-  console.log("Incoming request for /api/trending for WOEID " + req.query.WOEID);
+  // console.log("Incoming request for /api/trending for WOEID " + req.query.WOEID);
   
   var currentTime = new Date();
 

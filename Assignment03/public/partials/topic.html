@@ -1,0 +1,17 @@
+<div class="topicHeader">
+	<a ng-href="/#/map"><img src="img/back-icon.png"/></a>
+	<h1>{{activeTopic().name}}</h1>
+</div>
+
+<div ng-show="loadingTweets()" class="status loading">
+	Fetching tweets...
+	<img src="img/loading-indicator.gif">
+</div>
+
+<div ng-repeat="tweet in topTweets()" class="tweet">
+	<img ng-src="{{tweet.user.profile_image_url}}"/>
+	<div class="tweetContent">
+		<span class="userName">{{tweet.user.name}}</span>
+		<span class="tweetText">{{tweet.text}}</span>
+	</div>
+</div>

@@ -1,53 +1,50 @@
-var app = angular.module('cs4242', ['ngRoute','ngResource']);
+var app = angular.module('cs4242', ['ngRoute', 'ngResource', 'ngCookies']);
 
-// app.config(['$routeProvider',
-//   function($routeProvider) {
-//     $routeProvider.
-//       when('/', {
-//         templateUrl: 'partials/home.html',
-//         controller: 'HomeCtrl',
-//         activeTab: 'home'
-//       }).
-//       when('/schema',{
-//         templateUrl: 'partials/schedule.html',
-//         controller: 'ScheduleCtrl',
-//         activeTab: 'schedule'
-//       }). 
-//       when('/prislista', {
-//         templateUrl: 'partials/prices.html',
-//         controller: 'PricesCtrl',
-//         activeTab: 'prices'
-//       }).
-//       when('/kontakt',{
-//         templateUrl: 'partials/contact.html',
-//         controller: 'ContactCtrl',
-//         activeTab: 'contact'
-//       }).
-//       when('/intervjuer',{
-//         templateUrl: 'partials/jobs.html',
-//         controller: 'JobsCtrl',
-//         activeTab: 'interviews'
-//       }).
-//       when('/intervjuer/:jobID',{
-//         templateUrl: 'partials/job.html',
-//         controller: 'SingleJobCtrl',
-//         activeTab: 'interviews'
-//       }).
-//       when('/foretag/:companyName',{
-//         templateUrl: 'partials/company.html',
-//         controller: 'CompanyCtrl'
-//       }).
-//       when('/monterplatser', {
-//         templateUrl: 'partials/map.html',
-//         controller: 'MapCtrl',
-//         activeTab: 'map'
-//       }).
-//       when('/prislista/:packageType', {
-//         templateUrl: 'partials/package.html',
-//         controller: 'PackageCtrl',
-//         activeTab: 'prices'
-//       }).
-//       otherwise({
-//         redirectTo: '/'
-//       });
-//   }])
+app.config(['$routeProvider',
+	function($routeProvider) {
+		$routeProvider.
+		when('/', {
+			templateUrl: 'partials/map.html',
+			controller: 'mapCtrl',
+			activeTab: 'home'
+		}).
+		when('/login', {
+			templateUrl: 'partials/login.html',
+			controller: 'LoginCtrl',
+			activeTab: 'login'
+		}).
+		when('/register', {
+			templateUrl: 'partials/register.html',
+			controller: 'LoginCtrl',
+			activeTab: 'register'
+		}).
+		when('/trending/:topic', {
+			templateUrl: 'partials/topic.html',
+			controller: 'topicCtrl',
+			activeTab: 'topic'
+		}).
+		otherwise({
+			redirectTo: '/'
+		})
+	}
+]).
+run(function($rootScope, $location, $cookies){
+	$rootScope.$on( "$routeChangeStart", function(event, next, current) {
+		if($cookies.get("user") != undefined){
+			$rootScope.loggedInUser = $cookies.get("user");
+		}
+
+		if($rootScope.loggedInUser == undefined){
+			if(next["$$route"]["activeTab"] != "register"){
+				$location.path("/login");
+			}
+		} else {
+			if(next["$$route"] != undefined){
+				if((next["$$route"]["activeTab"] == "login") || (next["$$route"]["activeTab"] == "register")){
+					$location.path("/map");
+				}
+			}
+		}
+
+    });
+});
