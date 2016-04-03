@@ -103,6 +103,9 @@ footer {
   -ms-box-sizing: border-box;
   box-sizing: border-box;
   display: inline-block; }
+  .headerTitle a {
+    color: white;
+    text-decoration: none; }
 
 .status {
   display: block;
@@ -118,7 +121,8 @@ footer {
 
 .error {
   background-color: #DE3A3A;
-  color: #fafafa; }
+  color: #fafafa;
+  font-size: initial; }
 
 .pageWrap {
   min-height: 100%;
@@ -263,10 +267,21 @@ form.form {
   font-size: 18px;
   padding: 5px 20px; }
 
-#mainSearch {
+.searchBars {
+  font-size: 0;
   display: block;
-  width: 80%;
-  max-width: 650px;
+  margin: auto;
+  text-align: center;
+  max-width: 800px; }
+
+#mainSearch, #topicSearch {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: initial;
+  display: inline-block;
+  width: 100%;
   margin: auto;
   margin-top: 30px;
   text-align: center;
@@ -303,9 +318,7 @@ form.form {
   .topicHeader h1 {
     display: inline-block;
     margin: 0;
-    vertical-align: middle;
-    margin-left: 20px;
-    margin-right: 100px; }
+    vertical-align: middle; }
   .topicHeader a img {
     display: inline-block;
     height: 80px;
@@ -347,7 +360,14 @@ form.form {
 
   .headerTitle {
     font-family: "Lato", Sans-Serif;
-    font-size: 24px; } }
+    font-size: 22px; }
+
+  .topicHeader h1 {
+    margin-left: 20px;
+    margin-right: 100px; }
+
+  #mainSearch, #topicSearch {
+    width: 50%; } }
 /* Medium devices (desktops, 992px and up) */
 @media screen and (min-width: 992px) {
   .tweet {

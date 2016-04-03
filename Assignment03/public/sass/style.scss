@@ -141,6 +141,10 @@ footer {
 	font-weight:bold;
 	@include box-sizing(border-box);
 	display:inline-block;
+	a {
+		color:white;
+		text-decoration:none;
+	}
 }
 
 .status{
@@ -159,6 +163,7 @@ footer {
 .error {
 	background-color:$red-color;
 	color:$white-color;
+	font-size:initial;
 }
 
 .pageWrap {
@@ -332,18 +337,30 @@ form.form {
     padding: 5px 20px;
 }
 
+.searchBars {
+	font-size:0;
+	display:block;
+	margin:auto;
+	text-align:center;
+	max-width:800px;
+}
+
 #mainSearch {
-	display: block;
-    width: 80%;
-    max-width:650px;
+	@include box-sizing(border-box);
+	font-size:initial;
+	display:inline-block;
+    width: 100%;
     margin: auto;
     margin-top: 30px;
     text-align: center;
-    // border: 1px solid #DDDDDD;
     border:none;
     border-radius: 4px;
     padding: 5px;
     outline: none;
+}
+
+#topicSearch {
+	@extend #mainSearch;
 }
 
 .mapContainer {
@@ -379,8 +396,8 @@ form.form {
 		display: inline-block;
     	margin: 0;
     	vertical-align: middle;
-    	margin-left: 20px;
-    	margin-right: 100px;
+    	// margin-left: 20px;
+    	// margin-right: 100px;
 	}
 
 	a img {
@@ -435,7 +452,14 @@ form.form {
 
 	.headerTitle {
 		font-family:$font-stack;
-		font-size:24px;
+		font-size:22px;
+	}
+	.topicHeader h1 {
+    	margin-left: 20px;
+    	margin-right: 100px;
+    }
+	#mainSearch {
+	    width: 50%;
 	}
 }
 

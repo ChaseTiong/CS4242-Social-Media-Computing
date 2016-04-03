@@ -12,7 +12,7 @@
 	{{ Math.round( sentiments().positive.count/sentiments().total.count*100 ) }}% positive, 
 	{{ Math.round( sentiments().negative.count/sentiments().total.count*100 ) }}% negative, 
 	{{ Math.round( sentiments().neutral.count/sentiments().total.count*100 ) }}% neutral, 
-	{{ Math.round( sentiments().irrelevant.count/sentiments().total.count*100 ) }}% irrelevant
+	{{ Math.round( sentiments().irrelevant.count/sentiments().total.count*100 ) }}% irrelevant out of {{ sentiments().total.count }} tweets
 	<div class="filter">
 		Show 
 		<select ng-model="showResultType" ng-options="sentiment.name as sentiment.name for sentiment in filterOptions">

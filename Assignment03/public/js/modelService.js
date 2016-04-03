@@ -27,6 +27,7 @@ app.factory('Model', function ($http, $resource) {
 	}
 
 	this.setSelectedTopic = function(topic){
+		console.log(topic)
 		selectedTopic = topic;
 	}
 
@@ -75,7 +76,7 @@ app.factory('Model', function ($http, $resource) {
 					loadingTrends = false;
 				} else {
 					var activeWOEID = response.data.places.place[0].woeid;
-					console.log(response.data.places.place[0]);
+					// console.log(response.data.places.place[0]);
 					var params = {
 						url: "/api/trending",
 						method: "GET",
@@ -127,6 +128,7 @@ app.factory('Model', function ($http, $resource) {
 		);
 	}
 
+
 	this.getTopTweets = function(){
 		loadingTweets = true;
 		sentiments = [];
@@ -137,6 +139,37 @@ app.factory('Model', function ($http, $resource) {
 		}
 
 		$http(params).then(function success(response){
+			// Show original tweets instead of retweets
+			for(s in response.data.statuses){
+				if(response.data.statuses[s].retweeted_status){
+					response.data.statuses[s] = response.data.statuses[s].retweeted_status;
+					response.data.statuses[s].predicted_sentiment = response.data.labels[s];
+				} 
+			}
+
+			// Filter out duplicates (since two Twitter users could have retweeted the same tweet)
+			var ids = [];
+			var removeIndexes = [];
+			
+			// Iterate through the statuses and find the indexes of the tweets with duplicate IDs.
+			for(s in response.data.statuses){
+				if(ids.indexOf(response.data.statuses[s].id) != -1){
+					removeIndexes.push(s);
+				} else {
+					ids.push(response.data.statuses[s].id)
+				}
+			}
+
+			// Loop through the indexes of the tweets to be removed from back to front
+			for(var i = removeIndexes.length; i>0; i--){
+				var removeAtIndex = parseInt(removeIndexes[i], 10);
+				if(removeAtIndex){
+					response.data.statuses.splice(removeAtIndex,1);
+					response.data.labels.splice(removeAtIndex,1);
+				}
+			}
+
+			// Assign data to model
 			topTweets = response.data;
 			sentiments = response.data.labels;
 			loadingTweets = false;

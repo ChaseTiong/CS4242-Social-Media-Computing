@@ -101,8 +101,9 @@ app.controller('LoginCtrl', function ($scope, Model, $location, $cookies, $http)
     }
 });
 
-app.controller('mapCtrl', function ($scope, Model) {
+app.controller('mapCtrl', function ($scope, Model, $location) {
     $scope.userQuery = "";
+    $scope.topicSearch = "";
 
     $scope.updateSelectedTopic = function(topic){
         Model.setSelectedTopic(topic);
@@ -150,6 +151,21 @@ app.controller('mapCtrl', function ($scope, Model) {
             if($scope.userQuery.length != 0){
                 $scope.getTwitterData($scope.userQuery);
                 $scope.userQuery = "";
+            }
+        }
+    });
+
+    $("#topicSearch").keyup(function (e) {
+        if (e.keyCode == 13) {
+            if($scope.topicSearch.length != 0){
+                var selectedTopicObject = {};
+                selectedTopicObject.name = $scope.topicSearch;
+                selectedTopicObject.query = encodeURIComponent($scope.topicSearch);
+                $scope.updateSelectedTopic(selectedTopicObject);
+                $scope.topicSearch = "";
+                $location.path('/viewStats');
+                $scope.$apply();
+                // $("#topicSearch").blur();
             }
         }
     });

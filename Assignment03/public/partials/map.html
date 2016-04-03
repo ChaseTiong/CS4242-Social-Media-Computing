@@ -1,4 +1,8 @@
-<input type="text" placeholder="Search" id="mainSearch" ng-model="userQuery"></input>
+<div class="searchBars">
+	<input type="text" placeholder="Search for a place" id="mainSearch" ng-model="userQuery"></input>
+	<input type="text" placeholder="Or search directly for a topic" id="topicSearch" ng-model="topicSearch"></input>
+</div>
+
 <div class="mapContainer">
 	<div id="worldMap"></div>
 </div>
@@ -9,7 +13,7 @@
 		Getting data for {{loadingTrends()}}...
 		<img src="img/loading-indicator.gif">
 	</div>
-	<div ng-show="errorStatus() != false" class="status error">{{errorStatus()}}</div>
+	<div ng-show="errorStatus()" class="status error">{{ errorStatus() }}</div>
 	<div class="worldTrendsContainer">
 		<div ng-repeat="trend in trendingTopics()" class="trendingTopic">
 			<a ng-href="#/viewStats" ng-click="updateSelectedTopic(trend)" class="topicLink"> {{ trend.name }} </a>
