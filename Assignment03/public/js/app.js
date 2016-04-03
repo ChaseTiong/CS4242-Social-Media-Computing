@@ -18,7 +18,7 @@ app.config(['$routeProvider',
 			controller: 'LoginCtrl',
 			activeTab: 'register'
 		}).
-		when('/trending/:topic', {
+		when('/viewStats', {
 			templateUrl: 'partials/topic.html',
 			controller: 'topicCtrl',
 			activeTab: 'topic'
@@ -30,8 +30,8 @@ app.config(['$routeProvider',
 ]).
 run(function($rootScope, $location, $cookies){
 	$rootScope.$on( "$routeChangeStart", function(event, next, current) {
-		if($cookies.get("user") != undefined){
-			$rootScope.loggedInUser = $cookies.get("user");
+		if(($cookies.get("username") != undefined) && ($cookies.get("user_id") != undefined)){
+			$rootScope.loggedInUser = {username: $cookies.get("username"), user_id: $cookies.get("user_id")};
 		}
 
 		if($rootScope.loggedInUser == undefined){

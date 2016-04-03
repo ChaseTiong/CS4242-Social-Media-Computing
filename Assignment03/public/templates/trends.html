@@ -1,10 +1,10 @@
 <h1>Trends {{showingTrends()}}</h1>
-<div ng-show="loadingTrends() != false" class="status loading">
+<div ng-show="loadingTrends()" class="status loading">
 	Getting data for {{loadingTrends()}}...
 	<img src="img/loading-indicator.gif">
 </div>
 <div ng-show="errorStatus() != false" class="status error">{{errorStatus()}}</div>
-<div class="worldTrendsContainer">
+<div class="trendsContainer">
 	<div ng-repeat="trend in trendingTopics()" class="trendingTopic">
 		<a href="{{trend.url}}" target="_blank" class="topicLink"> {{ trend.name }} </a>
 	</div>

@@ -1,2 +1,33 @@
 Connecting to a mysql database with Python
 http://stackoverflow.com/questions/372885/how-do-i-connect-to-a-mysql-database-in-python
+
+
+################################################################
+
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS sentiments;
+DROP TABLE IF EXISTS topics;
+
+CREATE TABLE sentiments (
+	sentiment_id INT AUTO_INCREMENT PRIMARY KEY,
+    sentiment_text VARCHAR(255) UNIQUE
+);
+
+CREATE TABLE topics (
+	topic_id INT AUTO_INCREMENT PRIMARY KEY,
+    topic_text VARCHAR(255) UNIQUE
+);
+
+CREATE TABLE user_comments (
+	comment_id INT AUTO_INCREMENT PRIMARY KEY,
+    author INT,
+    comment_text VARCHAR(255), 
+    created_at datetime,
+    topic INT,
+    sentiment INT,
+    FOREIGN KEY (author) REFERENCES users(user_id),
+    FOREIGN KEY (topic) REFERENCES topics(topic_id),
+    FOREIGN KEY (sentiment) REFERENCES sentiments(sentiment_id)
+);
+
+################################################################

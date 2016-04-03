@@ -17,9 +17,11 @@ def main():
 	extractTestingData = False
 	helper = helperClass.Helper()
 	path_to_training_directory = "data/Train"
-	path_to_testing_directory = "data/Test"
+	# path_to_testing_directory = "data/Test"
+	path_to_testing_directory = "multi-view-online-testing"
 	path_to_training_labels = "data/Train/GroundTruth/groundTruth.txt"
-	path_to_testing_labels = "data/Test/GroundTruth/groundTruth.txt"
+	path_to_testing_labels = "multi-view-online-testing/GroundTruth/groundTruth.txt"
+	# path_to_testing_labels = "data/Test/GroundTruth/groundTruth.txt"
 
 	if(extractData):
 		truths = open(path_to_training_labels, "r").read().split("\n")
@@ -120,7 +122,10 @@ def main():
 
 	avgAcc = avgAcc/(len(models))
 	print "Average accuracy: "+str(avgAcc)+"%"
+
+	reader.saveOutput(labelContainer, 'data/outputLabels.csv')
 	pickle.dump(labelContainer, open("outputLabels.pkl", "wb"))
+	reader.getSaK()
 	# p_labels, p_accs, p_vals = svm_predict(labelVectors[0], featureVectors, model)
 
 

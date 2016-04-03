@@ -12,7 +12,7 @@
 	<div ng-show="errorStatus() != false" class="status error">{{errorStatus()}}</div>
 	<div class="worldTrendsContainer">
 		<div ng-repeat="trend in trendingTopics()" class="trendingTopic">
-			<a ng-href="#/trending/{{ trend.query }}" ng-click="updateSelectedTopic(trend)" class="topicLink"> {{ trend.name }} </a>
+			<a ng-href="#/viewStats" ng-click="updateSelectedTopic(trend)" class="topicLink"> {{ trend.name }} </a>
 		</div>
 	</div>
 </div>

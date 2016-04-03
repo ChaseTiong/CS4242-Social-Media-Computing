@@ -23,9 +23,10 @@ h1 {
   min-width: 20px; }
 
 .trendingTopic a:hover {
-  font-weight: bold; }
+  font-weight: bold;
+  color: #fe8d52; }
 
-.worldTrendsContainer {
+.trendsContainer {
   text-align: center;
   font-size: 0; }
 
@@ -85,7 +86,7 @@ footer {
   max-height: 100%;
   max-width: 50%;
   display: inline-block;
-  vertical-align: top; }
+  vertical-align: middle; }
 
 .headerLinks a img {
   max-height: 100%;
@@ -93,9 +94,9 @@ footer {
 
 .headerTitle {
   font-family: "Lato", Sans-Serif;
-  font-size: 24px;
+  font-size: 14pt;
   padding: 24px 2px 24px 24px;
-  vertical-align: top;
+  vertical-align: middle;
   font-weight: bold;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -131,13 +132,19 @@ footer {
   width: 96%;
   margin: 10px 2%; }
 
+.sentimentStats {
+  text-align: center;
+  padding: 20px; }
+  .sentimentStats .filter {
+    margin-top: 20px; }
+
 .tweet {
   font-size: 0;
   display: inline-block;
   -webkit-box-shadow: 0px 5px 45px -10px rgba(71, 71, 71, 0.4);
   -moz-box-shadow: 0px 5px 45px -10px rgba(71, 71, 71, 0.4);
   box-shadow: 0px 5px 45px -10px rgba(71, 71, 71, 0.4);
-  padding: 20px 0px;
+  padding: 20px 0px 0px;
   vertical-align: top;
   overflow: hidden; }
   .tweet img {
@@ -167,9 +174,22 @@ footer {
       font-weight: bold;
       width: 100%;
       display: block; }
-
-.nameAndBack img {
-  float: left; }
+  .tweet .labelDisplay {
+    font-size: initial;
+    display: block;
+    text-align: center;
+    background-color: #F1EFEF;
+    color: #3B4142;
+    padding: 2px;
+    margin-top: 10px; }
+    .tweet .labelDisplay span.positive {
+      color: #158415; }
+    .tweet .labelDisplay span.negative {
+      color: #A93030; }
+    .tweet .labelDisplay span.neutral {
+      color: #B3B314; }
+    .tweet .labelDisplay span.irrelevant {
+      color: #8C854D; }
 
 #menu {
   position: absolute;
@@ -234,12 +254,8 @@ form.form {
     width: 100%;
     margin: 0; }
   .loginForm input.button:hover {
-    background-color: #3B4142;
-    color: #fafafa;
-    -webkit-transition: color 0.5s ease;
-    -moz-transition: color 0.5s ease;
-    -ms-transition: color 0.5s ease;
-    transition: color 0.5s ease; }
+    background-color: #fe8d52;
+    color: #fafafa; }
 
 .button {
   background-color: white;
@@ -275,6 +291,12 @@ form.form {
   -webkit-box-shadow: 0px 5px 45px -10px rgba(71, 71, 71, 0.4);
   -moz-box-shadow: 0px 5px 45px -10px rgba(71, 71, 71, 0.4);
   box-shadow: 0px 5px 45px -10px rgba(71, 71, 71, 0.4); }
+  .loginBox img.backButton, .loginErrorContainer img.backButton {
+    cursor: pointer;
+    position: absolute;
+    height: 75px;
+    padding: 10px;
+    box-sizing: border-box; }
 
 .topicHeader {
   text-align: center; }
@@ -305,7 +327,7 @@ form.form {
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 20px;
-  background-color: #3B4142;
+  background-color: #fe8d52;
   color: #fafafa; }
 
 /* Small devices (tablets, 768px and up) */
@@ -321,7 +343,11 @@ form.form {
     margin: 10px 2%; }
 
   .trendingTopic {
-    width: 50%; } }
+    width: 50%; }
+
+  .headerTitle {
+    font-family: "Lato", Sans-Serif;
+    font-size: 24px; } }
 /* Medium devices (desktops, 992px and up) */
 @media screen and (min-width: 992px) {
   .tweet {

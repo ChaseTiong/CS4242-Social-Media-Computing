@@ -23,12 +23,17 @@ app.controller('AppCtrl', function ($scope, $rootScope, $cookies, $location, Mod
 
     $scope.logout = function(){
         delete $rootScope.loggedInUser;
-        $cookies.remove("user");
+        $cookies.remove("username");
+        $cookies.remove("user_id");
         $scope.closeMenu();
         $location.path("/login");
     }
 
     $scope.loggedInUser = function(){
-        return $rootScope.loggedInUser;
+        if($rootScope.loggedInUser != undefined){
+            return $rootScope.loggedInUser.username;
+        } else {
+            return "Not logged in...";
+        }
     }
 });

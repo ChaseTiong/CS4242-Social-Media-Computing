@@ -7,14 +7,13 @@ app.factory('Model', function ($http, $resource) {
 
 	var selectedTopic = {};
 	var topTweets = [];
+	var sentiments = [];
 
 	var errorStatus = false;
 	var loadingTrends = false;
-
 	var loadingTweets = false;
 
 	this.partialTopicUpdate = function(name){
-		console.log("Called!");
 		trendingTopics.name = name;
 		trendingTopics.trends = [];
 	}
@@ -57,6 +56,10 @@ app.factory('Model', function ($http, $resource) {
 		} 
 	}
 
+	this.getSentiments = function(){
+		return sentiments;
+	}
+
 	this.getPopular = function(query){
 		this.partialTopicUpdate(query);
 		
@@ -72,6 +75,7 @@ app.factory('Model', function ($http, $resource) {
 					loadingTrends = false;
 				} else {
 					var activeWOEID = response.data.places.place[0].woeid;
+					console.log(response.data.places.place[0]);
 					var params = {
 						url: "/api/trending",
 						method: "GET",
@@ -125,6 +129,7 @@ app.factory('Model', function ($http, $resource) {
 
 	this.getTopTweets = function(){
 		loadingTweets = true;
+		sentiments = [];
 		var params = {
 			url: "/api/tweets",
 			method: "GET",
@@ -133,8 +138,8 @@ app.factory('Model', function ($http, $resource) {
 
 		$http(params).then(function success(response){
 			topTweets = response.data;
+			sentiments = response.data.labels;
 			loadingTweets = false;
-			// console.log(response.data.statuses);
 		}, function error(response){
 			console.log(response);
 			loadingTweets = false;

@@ -1,4 +1,4 @@
-app.controller('LoginCtrl', function ($scope, $rootScope, Model, $location, $cookies, $http) {
+app.controller('LoginCtrl', function ($scope, Model, $location, $cookies, $http) {
     $scope.user = {
         name: "",
         password: "",
@@ -30,8 +30,8 @@ app.controller('LoginCtrl', function ($scope, $rootScope, Model, $location, $coo
                 console.log(response);
                 if(response.data.success){
                     console.log("Successful login!");
-                    $rootScope.loggedInUser = requestedUsername;
-                    $scope.setCookie(requestedUsername);
+                    
+                    $scope.setUserCookie(requestedUsername, response.data.user_id);
                     $location.path("/");
                 } else {
                     console.log("Failed login!");
@@ -74,8 +74,7 @@ app.controller('LoginCtrl', function ($scope, $rootScope, Model, $location, $coo
 
                 if(!$scope.errorStatus){
                     console.log("Registration successful!");
-                    $rootScope.loggedInUser = $scope.user.name;
-                    $scope.setCookie($scope.user.name);
+                    $scope.setUserCookie($scope.user.name, response.data.user_id);
                     $location.path("/");
                 }
                 $scope.loadingRegistration = false;
@@ -92,8 +91,13 @@ app.controller('LoginCtrl', function ($scope, $rootScope, Model, $location, $coo
         $location.path("/register");
     }
 
-    $scope.setCookie = function(user){
-        $cookies.put("user", user);
+    $scope.goToLogin = function(){
+        $location.path("/login");
+    }
+
+    $scope.setUserCookie = function(username, userID){
+        $cookies.put("user_id", userID);
+        $cookies.put("username", username);
     }
 });
 
@@ -150,29 +154,25 @@ app.controller('mapCtrl', function ($scope, Model) {
         }
     });
 
-    $("#mainSearch").focus();
 
     var init = function(){
         $scope.initializeMap();
-        $scope.getTwitterData('World');
+        $scope.getTwitterData(Model.activeRegion());
+        $("#mainSearch").focus();
     }
 
     init();
 });
 
 app.controller('topicCtrl', function ($scope, Model, $location) {
+    $scope.Math = window.Math;
+
     $scope.activeTopic = function(){
         return Model.getSelectedTopic();
     }
 
     if($scope.activeTopic()["name"] == undefined){
         $location.path("/");
-    } else {
-        var init = function(){
-            Model.getTopTweets();
-        }
-
-        init();
     }
 
     $scope.topTweets = function(){
@@ -183,8 +183,57 @@ app.controller('topicCtrl', function ($scope, Model, $location) {
         return Model.loadingTweets();
     }
 
+    $scope.sentiments = function(){
+        var sentiments = Model.getSentiments();
+        var stats = {
+            positive: {
+                count: 0,
+                name: "Positive"
+            },
+            negative: {
+                count: 0,
+                name: "Negative"
+            },
+            neutral: {
+                count: 0,
+                name: "Neutral"
+            },
+            irrelevant: {
+                count: 0,
+                name: "Irrelevant"
+            },
+            total: {
+                count: 0,
+                name: "All"
+            }
+        };
+
+        for (sentiment in sentiments){
+            stats[sentiments[sentiment]].count += 1;
+            stats.total.count += 1;
+        };
+
+        return stats;
+    }
+
+    $scope.filterOptions = $scope.sentiments();
+
+
+    $scope.tweetFilter = function(tweet){
+        var currentFilter = $scope.showResultType.toLowerCase();
+        if(currentFilter == "all"){
+            return true;
+        } else if(tweet.predicted_sentiment == currentFilter){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     var init = function(){
         Model.clearTweets();
+        Model.getTopTweets();
+        $scope.showResultType = "All";
     }
 
     init();

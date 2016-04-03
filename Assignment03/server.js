@@ -4,10 +4,12 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var Twitter = require('twitter');
 var MySql = require('mysql');
+var PythonShell = require('python-shell');
 
 var app = express();
 var lastRequest = null;
 var TRENDSFILE = path.join(__dirname, 'trends.json');
+var TWEETSFILE = path.join(__dirname, 'tweets.json');
 
 var twitterClient = new Twitter({
   consumer_key: 'EZU7dkXyANXP81X9FLPClPj3Q',
@@ -15,6 +17,7 @@ var twitterClient = new Twitter({
   access_token_key: '616422343-QxppVIi6s143vV2yc1KGQk6JV79G0kRK5GzDOOw1',
   access_token_secret: 'zMsu8dBKfkSvz8oWhKaoG4PHt0ptAuEpw7HYl2lNdhNVi'
 });
+
 
 var dbConnection = MySql.createConnection({
   port: 8889,
@@ -26,7 +29,8 @@ var dbConnection = MySql.createConnection({
 
 dbConnection.connect(function(err){
   if(err) console.log(err);
-})
+});
+
 
 app.set('port', (process.env.PORT || 3000));
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -45,7 +49,7 @@ app.post('/api/register', function(req, res){
   var userData = JSON.parse(req.query.user);
   var returnObject = {duplicateUsers: "Unknown", successfulUpdate: false};
 
-  var statement = "SELECT * FROM users WHERE username = '"+userData.name+"';";
+  var statement = "SELECT * FROM users WHERE username = "+dbConnection.escape(userData.name)+";";
   dbConnection.query(statement, function(err, result) {
     if(result.length > 0){
       returnObject.duplicateUsers = true;
@@ -53,16 +57,28 @@ app.post('/api/register', function(req, res){
     } else {
       returnObject.duplicateUsers = false;
 
-      var statement = "INSERT INTO users (username, password) VALUES ('"+userData.name+"', '"+userData.password+"');";
+      var statement = "INSERT INTO users (username, password) VALUES ("+dbConnection.escape(userData.name)+", "+dbConnection.escape(userData.password)+");";
+      var getUserIDQuery = "SELECT user_id FROM users WHERE username = "+dbConnection.escape(userData.name)+" AND password = "+dbConnection.escape(userData.password)+";";
+
       dbConnection.query(statement, function(err, result){
         if(err){
+          console.log("ERROR 1!");
           console.log(err);
           returnObject.successfulUpdate = false;
         } else {
-          // console.log(result);
-          returnObject.successfulUpdate = true;
-        }
-        res.json(returnObject);
+          console.log(result);
+          dbConnection.query(getUserIDQuery, function(err, result){
+            if(err){
+              console.log("ERROR 2!");
+              console.log(err);
+
+            } else {
+              returnObject["user_id"] = result[0]["user_id"];
+              returnObject.successfulUpdate = true;
+            }
+            res.json(returnObject);
+          })
+        }   
       });
     }
   });
@@ -70,15 +86,15 @@ app.post('/api/register', function(req, res){
 
 app.post("/api/login", function(req, res){
   var credentials = JSON.parse(req.query.credentials);
-  var statement = "SELECT count(*) FROM users WHERE username = "+dbConnection.escape(credentials.username)+" and password = "+dbConnection.escape(credentials.password)+";";
+  var statement = "SELECT * FROM users WHERE username = "+dbConnection.escape(credentials.username)+" and password = "+dbConnection.escape(credentials.password)+";";
 
   dbConnection.query(statement, function(err, result){
     if(err){
       console.log(err);
       res.json(err);
     } else {
-      if(result[0]['count(*)']==1){
-        res.json({success: true});
+      if(result.length == 1){
+        res.json({success: true, user_id: result[0]["user_id"]});
       } else {
         res.json({success: false});
       }
@@ -87,17 +103,64 @@ app.post("/api/login", function(req, res){
 });
 
 app.get('/api/tweets', function(req, res){
-  var params = {q: req.query.q, count:15, type:"popular"};
+  console.log("Incoming request for ",req.query.q, " tweets");
+  var params = {q: req.query.q, count:100, type:"popular", lang:"en"};
   twitterClient.get('search/tweets', params, function(error, tweets, response){
+    // if (error) throw error;
     if(error){
-      console.log(error);
+      res.json(error)
+    } else {
+      console.log("Fetched ",tweets.statuses.length, " tweets from twitter, inserting into database.");
+
+      var query = "INSERT IGNORE INTO tweets(id, created_at, lang, favourite_count, retweet_count, text) VALUES ";
+      var stringifiedTweets = []
+      for (tweet in tweets.statuses){
+        if(tweets.statuses[tweet]["retweeted_status"] == undefined){
+          var currentTweet = tweets.statuses[tweet];
+        } else {
+          var currentTweet = tweets.statuses[tweet]["retweeted_status"];
+        }
+
+        stringifiedTweets.push(JSON.stringify(currentTweet["text"]));
+
+        query += "("+currentTweet["id_str"]+",'"+new Date().toISOString(currentTweet["created_at"]).slice(0, 19).replace('T', ' ')+"','"+currentTweet["lang"]+"',"+currentTweet["favorite_count"]+","+currentTweet["retweet_count"]+","+dbConnection.escape(currentTweet["text"])+")";
+
+        if(tweet != (tweets.statuses.length-1)){
+          query += ",";
+        } else {
+          query += ";";
+        }
+      }
+
+      dbConnection.query(query, function(err, result){
+        if(err) throw err;
+        console.log("Tweets successfully saved to database!");
+        console.log(result);
+      });
+
+      var options = {
+        args: stringifiedTweets
+      };
+
+      console.log("Classifying tweets...");
+      PythonShell.run("python/classifyTweets.py", options, function(err, result){
+        if(err) throw err;
+        tweets.labels = result;
+        console.log("Tweets classified");
+        for(i in tweets.statuses){
+          tweets.statuses[i].predicted_sentiment = result[i];
+        }
+        console.log("Returning ",tweets.statuses.length," tweets");
+        res.json(tweets);
+      });  
     }
-    res.json(tweets);
+    
+
   });
 });
 
 app.get('/api/trending', function(req, res){
-  var updateThreshold = 1800;
+  var updateThreshold = 5400;
   // console.log("Incoming request for /api/trending for WOEID " + req.query.WOEID);
   
   var currentTime = new Date();

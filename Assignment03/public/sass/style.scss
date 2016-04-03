@@ -4,6 +4,12 @@ $light-gray-color: #DEDEDE;
 $white-color: #fafafa;
 $black-color: #2D2D2D;
 $red-color: #DE3A3A;
+// $complementary-color: $gray-color;
+// $complementary-color:#4ECDC4; // Turkos
+// $complementary-color: #3C6E71; // Blågrå
+$complementary-color: #fe8d52; // Orange
+// $complementary-color: #ABDDA4; // Light green
+
 $header-height:75px;
 $footer-height:50px;
 $menu-width: 200px;
@@ -57,9 +63,10 @@ h1 {
 
 .trendingTopic a:hover {
 	font-weight:bold;
+	color:$complementary-color;
 }
 
-.worldTrendsContainer{
+.trendsContainer{
 	text-align: center;
 	font-size:0;
 }
@@ -117,7 +124,7 @@ footer {
 	max-height:100%;
 	max-width:50%;
 	display:inline-block;
-	vertical-align: top;
+	vertical-align: middle;
 }
 
 .headerLinks a img {
@@ -127,9 +134,10 @@ footer {
 
 .headerTitle {
 	font-family:$font-stack;
-	font-size:24px;
+	// font-size:24px;
+	font-size:14pt;
 	padding: 24px 2px 24px 24px;
-	vertical-align:top;
+	vertical-align:middle;
 	font-weight:bold;
 	@include box-sizing(border-box);
 	display:inline-block;
@@ -167,11 +175,20 @@ footer {
     margin:10px $tweet-margin;
 }
 
+
+.sentimentStats {
+	text-align: center;
+	padding:20px;
+	.filter {
+		margin-top:20px;
+	}
+}
+
 .tweet {
 	font-size:0;
     display: inline-block;
     @include boxShadow();
-	padding:20px 0px;
+	padding:20px 0px 0px;
     vertical-align: top;
     overflow: hidden;
 	img {
@@ -199,11 +216,27 @@ footer {
   		overflow: hidden;
   		text-overflow: ellipsis;
 	}
-}
 
-.nameAndBack {
-	img{
-		float:left;
+	.labelDisplay {
+	    font-size: initial;
+	    display: block;
+	    text-align: center;
+	    background-color: #F1EFEF;
+	    color: $gray-color;
+	    padding: 2px;
+	    margin-top:10px;
+	    span.positive {
+			color: #158415; // Green
+	    }
+		span.negative {
+			color: #A93030; // Red
+		}
+	    span.neutral {
+			color: #B3B314; // Dark yellow
+	    }
+		span.irrelevant {
+	    	color: #8C854D; // Yellow-Brown-ish
+		}
 	}
 }
 
@@ -285,9 +318,10 @@ form.form {
 	}
 
 	input.button:hover{
-		background-color:$gray-color;
+		// background-color:$gray-color;
+		background-color:$complementary-color;
 		color:$white-color;
-		@include transition(color, 0.5s, ease);
+		// @include transition(color, 0.5s, ease);
 	}
 }
 
@@ -329,6 +363,14 @@ form.form {
     padding-top: 20px;
     margin-top: 40px;
     @include boxShadow();
+
+    img.backButton {
+    	cursor:pointer;
+    	position: absolute;
+    	height: 75px;
+    	padding: 10px;
+    	box-sizing: border-box;
+    }
 }
 
 .topicHeader {
@@ -364,17 +406,12 @@ form.form {
     overflow: hidden;
     text-overflow: ellipsis;
 	padding:20px;
-	background-color:$gray-color;
+	// background-color:$gray-color;
+	background-color: $complementary-color;
+
 	color:$white-color;
 }
 
-// #backIcon {
-// 	display: inline-block;
-//     height: 80px;
-//     box-sizing: border-box;
-//     vertical-align: middle;
-//     padding: 10px;
-// }
 /* Small devices (tablets, 768px and up) */
 @media screen and (min-width: 768px) {
 	.loginBox {
@@ -394,6 +431,11 @@ form.form {
 	.trendingTopic {
 		$topic-width: 50%;
 		width:$topic-width;
+	}
+
+	.headerTitle {
+		font-family:$font-stack;
+		font-size:24px;
 	}
 }
 
@@ -417,12 +459,6 @@ form.form {
 
 /* Large devices (large desktops, 1200px and up) */
 @media screen and (min-width: 1200px) {
-	// .tweet {
-	// 	$tweet-width: 25%;
-	// 	$tweet-margin:2%;
- //    	width:$tweet-width - $tweet-margin * 2;
- //    	margin:10px $tweet-margin;
-	// }
 	.loginBox {
 		width:30%;
 	}

@@ -8,10 +8,23 @@
 	<img src="img/loading-indicator.gif">
 </div>
 
-<div ng-repeat="tweet in topTweets()" class="tweet">
+<div class="sentimentStats" ng-hide="loadingTweets()">
+	{{ Math.round( sentiments().positive.count/sentiments().total.count*100 ) }}% positive, 
+	{{ Math.round( sentiments().negative.count/sentiments().total.count*100 ) }}% negative, 
+	{{ Math.round( sentiments().neutral.count/sentiments().total.count*100 ) }}% neutral, 
+	{{ Math.round( sentiments().irrelevant.count/sentiments().total.count*100 ) }}% irrelevant
+	<div class="filter">
+		Show 
+		<select ng-model="showResultType" ng-options="sentiment.name as sentiment.name for sentiment in filterOptions">
+	    </select>
+	</div>
+</div>
+
+<div ng-repeat="tweet in topTweets() | filter:tweetFilter" class="tweet">
 	<img ng-src="{{tweet.user.profile_image_url}}"/>
 	<div class="tweetContent">
 		<span class="userName">{{tweet.user.name}}</span>
 		<span class="tweetText">{{tweet.text}}</span>
 	</div>
+	<div class="labelDisplay">Classified as <span ng-class="tweet.predicted_sentiment">{{ tweet.predicted_sentiment }}</span></div>
 </div>
