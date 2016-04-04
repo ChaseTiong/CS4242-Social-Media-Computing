@@ -19,7 +19,6 @@ for i in range(1, len(sys.argv)):
 
 model = svm_load_model('python/tweetClassifier.model')
 
-
 save_stdout = sys.stdout
 sys.stdout = cStringIO.StringIO()
 predictedLabels, predictionAccuracy, predictionValues = svm_predict([0]*len(featureVectors), featureVectors, model)
