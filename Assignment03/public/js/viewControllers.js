@@ -232,6 +232,35 @@ app.controller('topicCtrl', function ($scope, Model, $location) {
         return stats;
     }
 
+
+
+    $scope.getPercentage = function(sentiment, type){
+        if($scope.sentiments().total.count == 0){
+            return 0;
+        } else {
+            if(type==="round"){
+                return Math.round( $scope.sentiments()[sentiment].count/$scope.sentiments().total.count*100 );
+            } else if(type==="floor") {
+                return Math.floor( $scope.sentiments()[sentiment].count/$scope.sentiments().total.count*100 );
+            } else {
+                return $scope.sentiments()[sentiment].count/$scope.sentiments().total.count*100;
+            }
+        }
+    };
+
+    $scope.checkIfZero = function(sentiment){
+        // return "margin:0";
+        if($scope.getPercentage(sentiment, "default") === 0){
+            // console.log($scope.getPercentage(sentiment, "default"));
+            // console.log(sentiment, "is zero!");
+            return "margin:0;"
+        } else {
+            // console.log($scope.getPercentage(sentiment, "default"));
+            // console.log(sentiment, "is not zero!");
+        }
+
+    }
+
     $scope.filterOptions = $scope.sentiments();
 
 

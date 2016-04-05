@@ -13,10 +13,18 @@ helper = helperClass.Helper("data/stopwords.txt")
 
 path_to_training_file = "data/Train/fromAssignment01.csv"
 path_to_tweets = "data/Train/Tweets"
-output_file = "data/Train/fromAssignment01Concatenated.csv"
+output_file = "data/Train/train.csv"
 
-print "Concatenating tweets into CSV file..."
+print "Concatenating training tweets into CSV file..."
 reader.concatenateCSV(path_to_training_file, path_to_tweets, output_file)
+
+# path_to_testing_file = "data/Train/testingFromAssignment01.csv"
+# path_to_tweets = "data/Train/Tweets"
+# testing_output_file = "data/Train/testingFromAssignment01Concatenated.csv"
+
+# print "Concatenating tweets into CSV file..."
+# reader.concatenateCSV(path_to_testing_file, path_to_tweets, testing_output_file)
+
 
 # Requires delimiter ;
 
@@ -46,6 +54,9 @@ for t in rawTweets:
 	tweets.append(cleanedTweet)
 	words = words.union(helper.extractWords(cleanedTweet))
 
+testTweet = "THIS IS SOMETHING BELIEBERS LIVE FOR 😍😍❤️ #OurJustin https://t.co/NJBOZ0Q358"
+print helper.clean(testTweet)
+print testTweet
 # Update the helper feature list to all words found amongst the tweets
 helper.setFeatureList(sorted(words))
 pickle.dump(sorted(words), open("featureList.pkl", "wb"))
@@ -76,4 +87,53 @@ print "Saving model..."
 # Save trained model
 svm_save_model('tweetClassifier.model', model)
 
-print "Done!"
+
+
+
+
+
+# path_to_testing_file = "data/Train/testingFromAssignment01.csv"
+# path_to_tweets = "data/Train/Tweets"
+# testing_output_file = "data/Train/test.csv"
+
+# print "Concatenating training tweets into CSV file..."
+# reader.concatenateCSV(path_to_testing_file, path_to_tweets, testing_output_file)
+
+# path_to_testing_data = output_file
+
+# print "Converting CSV into array..."
+# # Read training data stored in specified CSV file.
+# data = reader.CSVtoArrays(path_to_testing_data, containsHeaders=True)
+# # data = reader.CSVtoArrays("data/Train/databaseOutput.csv", containsHeaders=True, delimiter=";")
+# rawTweets = data["text"]
+# rawLabels = data["sentiment"]
+
+# print "Translating labels..."
+# # Convert labels to numbers
+# labels = []
+# for l in rawLabels:
+# 	labels.append(dictionary.translateSentiment(l))
+
+# print "Cleaning tweets..."
+# # Clean all the tweets, including stopword removal, stemming and custom feature removal
+# tweets = []
+# for t in rawTweets:
+# 	cleanedTweet = helper.clean(t)
+# 	tweets.append(cleanedTweet)
+
+# print "Generating feature vectors..."
+# featureVectors = []
+# for t in tweets:
+# 	featureVectors.append(helper.getFeatureVector(t))
+
+# print "Translating labels..."
+# # Convert labels to numbers
+# labels = []
+# for l in rawLabels:
+# 	labels.append(dictionary.translateSentiment(l))
+
+
+
+
+
+# print "Done!"

@@ -4,6 +4,15 @@ $light-gray-color: #DEDEDE;
 $white-color: #fafafa;
 $black-color: #2D2D2D;
 $red-color: #DE3A3A;
+
+$positive-color:#158415;
+$negative-color:#A93030;
+$neutral-color:#B3B314;
+// $irrelevant-color:#8C854D;
+$irrelevant-color:#969696;
+
+
+
 // $complementary-color: $gray-color;
 // $complementary-color:#4ECDC4; // Turkos
 // $complementary-color: #3C6E71; // Blågrå
@@ -14,10 +23,16 @@ $header-height:75px;
 $footer-height:50px;
 $menu-width: 200px;
 
-@mixin boxShadow(){
+@mixin standardBoxShadow(){
 	-webkit-box-shadow: 0px 5px 45px -10px rgba(71,71,71,0.4);
 	   -moz-box-shadow: 0px 5px 45px -10px rgba(71,71,71,0.4);
 			box-shadow: 0px 5px 45px -10px rgba(71,71,71,0.4);
+}
+
+@mixin customBoxShadow($v1, $v2, $v3, $v4, $v5){
+	-webkit-box-shadow: $v1 $v2 $v3 $v4 $v5;
+	   -moz-box-shadow: $v1 $v2 $v3 $v4 $v5;
+			box-shadow: $v1 $v2 $v3 $v4 $v5;
 }
 
 
@@ -69,6 +84,91 @@ h1 {
 .trendsContainer{
 	text-align: center;
 	font-size:0;
+}
+
+.statsBar {
+    width: 90%;
+    display: block;
+    margin: auto;
+    font-size:0;
+    margin-bottom:20px;
+    // @include box-sizing(border-box);
+    padding:20px;
+    hr {
+		display: inline-block;
+    	border: 5px solid;
+    	border-left:0;
+    	border-right:0;
+		margin-left:0.5%;
+		margin-right:0.5%;
+
+    	&.positive {
+    		border-color:$positive-color;
+    	}
+    	&.negative {
+    		border-color:$negative-color;
+    	}
+    	&.neutral {
+    		border-color:$neutral-color;
+    	}
+    	&.irrelevant {
+    		border-color:$irrelevant-color;
+    	}
+    }
+}
+
+#selectFilterBox {
+	border: none;
+    background-color: white;
+    // box-shadow: 0px 5px 10px -5px gray;
+    @include customBoxShadow(0px, 3px, 10px, -5px, rgba(71, 71, 71, 1));
+    text-transform: none;
+    margin:0 10px;
+    &:focus{
+    	outline:0;
+    }
+}
+
+.percentagePresentation {
+	width:90%;
+	margin:auto;
+	font-size:0;
+
+	.percentageBox {
+		font-size:initial;
+		display:inline-block;
+		width:50%;
+		text-align: center;
+		margin:20px 0px;
+		&.totalCount {
+			width:100%;
+		}
+
+		.label {
+			&.positive {
+				color:$positive-color;
+			}
+			&.negative {
+				color:$negative-color
+			}
+			&.neutral {
+				color:$neutral-color
+			}
+			&.irrelevant {
+				color:$irrelevant-color
+			}
+		}
+		.percentage {
+			font-size:1.4em;
+		}
+	}
+	.totalNumTweets {
+		margin:20px 0px;
+		font-size:initial;
+		.biggerText {
+			font-size:1.4em;
+		}
+	}
 }
 
 a {
@@ -172,7 +272,6 @@ footer {
  	@include box-sizing(border-box);
 }
 
-
 .tweet {
 	$tweet-width: 100%;
 	$tweet-margin:2%;
@@ -184,15 +283,16 @@ footer {
 .sentimentStats {
 	text-align: center;
 	padding:20px;
+	padding-top:0;
 	.filter {
-		margin-top:20px;
+		margin-top:30px;
 	}
 }
 
 .tweet {
 	font-size:0;
     display: inline-block;
-    @include boxShadow();
+    @include standardBoxShadow();
 	padding:20px 0px 0px;
     vertical-align: top;
     overflow: hidden;
@@ -231,16 +331,16 @@ footer {
 	    padding: 2px;
 	    margin-top:10px;
 	    span.positive {
-			color: #158415; // Green
+			color: $positive-color; // Green
 	    }
 		span.negative {
-			color: #A93030; // Red
+			color: $negative-color; // Red
 		}
 	    span.neutral {
-			color: #B3B314; // Dark yellow
+			color: $neutral-color; // Dark yellow
 	    }
 		span.irrelevant {
-	    	color: #8C854D; // Yellow-Brown-ish
+	    	color: $irrelevant-color; // Yellow-Brown-ish
 		}
 	}
 }
@@ -250,7 +350,7 @@ footer {
 	width:$menu-width;
 	left:$menu-width*-1;
 	transition: left 0.2s ease;
-	@include boxShadow();
+	@include standardBoxShadow();
 	display:block;
 	top:$header-height;
 	background-color:white;
@@ -379,7 +479,7 @@ form.form {
     // padding-bottom: 50px;
     padding-top: 20px;
     margin-top: 40px;
-    @include boxShadow();
+    @include standardBoxShadow();
 
     img.backButton {
     	cursor:pointer;
@@ -461,6 +561,21 @@ form.form {
 	#mainSearch {
 	    width: 50%;
 	}
+
+	.statsBar {
+		width: 80%;
+	}
+
+	.percentagePresentation {
+		width:80%;
+		.percentageBox {
+			&.totalCount{
+				width:20%;
+			}
+			width:20%;
+			margin:0;
+		}
+	}
 }
 
 /* Medium devices (desktops, 992px and up) */
@@ -479,11 +594,27 @@ form.form {
 	.loginBox {
 		width:40%;
 	}
+
+	.statsBar {
+		width:50%;
+	}
+
+	.percentagePresentation {
+		width:70%;
+	}
 }
 
 /* Large devices (large desktops, 1200px and up) */
 @media screen and (min-width: 1200px) {
 	.loginBox {
 		width:30%;
+	}
+
+	.statsBar {
+		width:40%;
+	}
+
+	.percentagePresentation {
+		width:60%;
 	}
 }

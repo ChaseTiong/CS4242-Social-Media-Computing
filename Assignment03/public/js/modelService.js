@@ -27,7 +27,6 @@ app.factory('Model', function ($http, $resource) {
 	}
 
 	this.setSelectedTopic = function(topic){
-		console.log(topic)
 		selectedTopic = topic;
 	}
 
@@ -168,6 +167,8 @@ app.factory('Model', function ($http, $resource) {
 					response.data.labels.splice(removeAtIndex,1);
 				}
 			}
+
+			console.log("Removed ",removeIndexes.length," tweets due to RT duplicates");
 
 			// Assign data to model
 			topTweets = response.data;

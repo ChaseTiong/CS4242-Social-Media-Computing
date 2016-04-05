@@ -30,6 +30,68 @@ h1 {
   text-align: center;
   font-size: 0; }
 
+.statsBar {
+  width: 90%;
+  display: block;
+  margin: auto;
+  font-size: 0;
+  margin-bottom: 20px;
+  padding: 20px; }
+  .statsBar hr {
+    display: inline-block;
+    border: 5px solid;
+    border-left: 0;
+    border-right: 0;
+    margin-left: 0.5%;
+    margin-right: 0.5%; }
+    .statsBar hr.positive {
+      border-color: #158415; }
+    .statsBar hr.negative {
+      border-color: #A93030; }
+    .statsBar hr.neutral {
+      border-color: #B3B314; }
+    .statsBar hr.irrelevant {
+      border-color: #969696; }
+
+#selectFilterBox {
+  border: none;
+  background-color: white;
+  -webkit-box-shadow: 0px 3px 10px -5px #474747;
+  -moz-box-shadow: 0px 3px 10px -5px #474747;
+  box-shadow: 0px 3px 10px -5px #474747;
+  text-transform: none;
+  margin: 0 10px; }
+  #selectFilterBox:focus {
+    outline: 0; }
+
+.percentagePresentation {
+  width: 90%;
+  margin: auto;
+  font-size: 0; }
+  .percentagePresentation .percentageBox {
+    font-size: initial;
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    margin: 20px 0px; }
+    .percentagePresentation .percentageBox.totalCount {
+      width: 100%; }
+    .percentagePresentation .percentageBox .label.positive {
+      color: #158415; }
+    .percentagePresentation .percentageBox .label.negative {
+      color: #A93030; }
+    .percentagePresentation .percentageBox .label.neutral {
+      color: #B3B314; }
+    .percentagePresentation .percentageBox .label.irrelevant {
+      color: #969696; }
+    .percentagePresentation .percentageBox .percentage {
+      font-size: 1.4em; }
+  .percentagePresentation .totalNumTweets {
+    margin: 20px 0px;
+    font-size: initial; }
+    .percentagePresentation .totalNumTweets .biggerText {
+      font-size: 1.4em; }
+
 a {
   color: #2D2D2D;
   text-decoration: none; }
@@ -138,9 +200,10 @@ footer {
 
 .sentimentStats {
   text-align: center;
-  padding: 20px; }
+  padding: 20px;
+  padding-top: 0; }
   .sentimentStats .filter {
-    margin-top: 20px; }
+    margin-top: 30px; }
 
 .tweet {
   font-size: 0;
@@ -193,7 +256,7 @@ footer {
     .tweet .labelDisplay span.neutral {
       color: #B3B314; }
     .tweet .labelDisplay span.irrelevant {
-      color: #8C854D; }
+      color: #969696; }
 
 #menu {
   position: absolute;
@@ -367,7 +430,18 @@ form.form {
     margin-right: 100px; }
 
   #mainSearch, #topicSearch {
-    width: 50%; } }
+    width: 50%; }
+
+  .statsBar {
+    width: 80%; }
+
+  .percentagePresentation {
+    width: 80%; }
+    .percentagePresentation .percentageBox {
+      width: 20%;
+      margin: 0; }
+      .percentagePresentation .percentageBox.totalCount {
+        width: 20%; } }
 /* Medium devices (desktops, 992px and up) */
 @media screen and (min-width: 992px) {
   .tweet {
@@ -378,10 +452,22 @@ form.form {
     width: 33.3%; }
 
   .loginBox, .loginErrorContainer {
-    width: 40%; } }
+    width: 40%; }
+
+  .statsBar {
+    width: 50%; }
+
+  .percentagePresentation {
+    width: 70%; } }
 /* Large devices (large desktops, 1200px and up) */
 @media screen and (min-width: 1200px) {
   .loginBox, .loginErrorContainer {
-    width: 30%; } }
+    width: 30%; }
+
+  .statsBar {
+    width: 40%; }
+
+  .percentagePresentation {
+    width: 60%; } }
 
 /*# sourceMappingURL=style.css.map */

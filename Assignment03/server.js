@@ -110,49 +110,61 @@ app.get('/api/tweets', function(req, res){
     if(error){
       res.json(error)
     } else {
-      console.log("Fetched ",tweets.statuses.length, " tweets from twitter, inserting into database.");
+      console.log("Fetched ",tweets.statuses.length, " tweets from twitter");
 
-      var query = "INSERT IGNORE INTO tweets(id, created_at, lang, favourite_count, retweet_count, text) VALUES ";
-      var stringifiedTweets = []
-      for (tweet in tweets.statuses){
-        if(tweets.statuses[tweet]["retweeted_status"] == undefined){
-          var currentTweet = tweets.statuses[tweet];
-        } else {
-          var currentTweet = tweets.statuses[tweet]["retweeted_status"];
+      if(tweets.statuses.length > 0){
+        console.log("Inserting into database...");
+        var query = "INSERT IGNORE INTO tweets(id, created_at, lang, favourite_count, retweet_count, text) VALUES ";
+        var stringifiedTweets = []
+
+        for (tweet in tweets.statuses){
+          if(tweets.statuses[tweet]["retweeted_status"] == undefined){
+            var currentTweet = tweets.statuses[tweet];
+          } else {
+            var currentTweet = tweets.statuses[tweet]["retweeted_status"];
+          }
+
+          stringifiedTweets.push(JSON.stringify(currentTweet["text"]));
+
+          // console.log(JSON.stringify(currentTweet["text"]));
+
+          query += "("+currentTweet["id_str"]+",'"+new Date().toISOString(currentTweet["created_at"]).slice(0, 19).replace('T', ' ')+"','"+currentTweet["lang"]+"',"+currentTweet["favorite_count"]+","+currentTweet["retweet_count"]+","+dbConnection.escape(currentTweet["text"])+")";
+
+          if(tweet != (tweets.statuses.length-1)){
+            query += ",";
+          } else {
+            query += ";";
+          }
         }
 
-        stringifiedTweets.push(JSON.stringify(currentTweet["text"]));
 
-        query += "("+currentTweet["id_str"]+",'"+new Date().toISOString(currentTweet["created_at"]).slice(0, 19).replace('T', ' ')+"','"+currentTweet["lang"]+"',"+currentTweet["favorite_count"]+","+currentTweet["retweet_count"]+","+dbConnection.escape(currentTweet["text"])+")";
+        dbConnection.query(query, function(err, result){
+          if(err) {
+            console.log(query);
+            throw err;
+          }
+          console.log("Tweets successfully saved to database!");
+          // console.log(result);
+        });
 
-        if(tweet != (tweets.statuses.length-1)){
-          query += ",";
-        } else {
-          query += ";";
-        }
+        var options = {
+          args: stringifiedTweets
+        };
+
+        console.log("Classifying tweets...");
+        PythonShell.run("python/classifyTweets.py", options, function(err, result){
+          if(err) throw err;
+          tweets.labels = result;
+          console.log("Tweets classified");
+          for(i in tweets.statuses){
+            tweets.statuses[i].predicted_sentiment = result[i];
+          }
+          console.log("Returning ",tweets.statuses.length," tweets");
+          res.json(tweets);
+        });  
+      } else {
+        res.json([]);
       }
-
-      dbConnection.query(query, function(err, result){
-        if(err) throw err;
-        console.log("Tweets successfully saved to database!");
-        console.log(result);
-      });
-
-      var options = {
-        args: stringifiedTweets
-      };
-
-      console.log("Classifying tweets...");
-      PythonShell.run("python/classifyTweets.py", options, function(err, result){
-        if(err) throw err;
-        tweets.labels = result;
-        console.log("Tweets classified");
-        for(i in tweets.statuses){
-          tweets.statuses[i].predicted_sentiment = result[i];
-        }
-        console.log("Returning ",tweets.statuses.length," tweets");
-        res.json(tweets);
-      });  
     }
     
 

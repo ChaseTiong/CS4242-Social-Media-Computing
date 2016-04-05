@@ -9,14 +9,39 @@
 </div>
 
 <div class="sentimentStats" ng-hide="loadingTweets()">
-	{{ Math.round( sentiments().positive.count/sentiments().total.count*100 ) }}% positive, 
-	{{ Math.round( sentiments().negative.count/sentiments().total.count*100 ) }}% negative, 
-	{{ Math.round( sentiments().neutral.count/sentiments().total.count*100 ) }}% neutral, 
-	{{ Math.round( sentiments().irrelevant.count/sentiments().total.count*100 ) }}% irrelevant out of {{ sentiments().total.count }} tweets
+	<div class="statsBar">
+		<hr class="positive" style="width:{{ getPercentage('positive', 'floor') - 1 }}%; {{ checkIfZero('positive') }}"/>
+		<hr class="negative" style="width: {{ getPercentage('negative', 'floor') - 1 }}%; {{ checkIfZero('negative') }}"/>
+		<hr class="neutral" style="width: {{ getPercentage('neutral', 'floor') - 1 }}%; {{ checkIfZero('neutral') }}"/>
+		<hr class="irrelevant" style="width: {{ getPercentage('irrelevant', 'floor') - 1 }}%; {{ checkIfZero('irrelevant') }}"/>
+	</div>
+	<div class="percentagePresentation">
+		<div class="percentageBox totalCount">
+			<div class="label total">Tweets</div>
+			<div class="percentage">{{ sentiments().total.count }}</div>
+		</div>
+		<div class="percentageBox">
+			<div class="label positive">Positive</div>
+			<div class="percentage">{{ getPercentage('positive', 'round') }}%</div>
+		</div>
+		<div class="percentageBox">
+			<div class="label negative">Negative</div>
+			<div class="percentage">{{ getPercentage('negative', 'round') }}%</div>
+		</div>
+		<div class="percentageBox">
+			<div class="label neutral">Neutral</div>
+			<div class="percentage">{{ getPercentage('neutral', 'round') }}%</div>
+		</div>
+		<div class="percentageBox">
+			<div class="label irrelevant">Irrelevant</div>
+			<div class="percentage">{{ getPercentage('irrelevant', 'round') }}%</div>
+		</div>
+	</div>
 	<div class="filter">
-		Show 
-		<select ng-model="showResultType" ng-options="sentiment.name as sentiment.name for sentiment in filterOptions">
+		Showing 
+		<select ng-model="showResultType" ng-options="sentiment.name as sentiment.name for sentiment in filterOptions" id="selectFilterBox">
 	    </select>
+	     tweets
 	</div>
 </div>
 
