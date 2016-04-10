@@ -9,16 +9,16 @@ class Helper:
 		self.stopwords = self.getStopwords(path_to_stopwords) 
 		self.featureList = set()
 
-		# try:
-		#     # Wide UCS-4 build
-		#     self.myre = re.compile(u'['u'\U0001f60D-\U0001f60D]+', re.UNICODE)
-		# except re.error:
-		#     # Narrow UCS-2 build
-		#     self.myre = re.compile(u'('
-		#         u'\ud83c[\udf00-\udfff]|'
-		#         u'\ud83d[\udc00-\ude4f\ude80-\udeff]|'
-		#         u'[\u2600-\u26FF\u2700-\u27BF])+', 
-		#         re.UNICODE)
+		try:
+		    # Wide UCS-4 build
+		    self.myre = re.compile(u'['u'\U0001f60D-\U0001f60D]+', re.UNICODE)
+		except re.error:
+		    # Narrow UCS-2 build
+		    self.myre = re.compile(u'('
+		        u'\ud83c[\udf00-\udfff]|'
+		        u'\ud83d[\udc00-\ude4f\ude80-\udeff]|'
+		        u'[\u2600-\u26FF\u2700-\u27BF])+', 
+		        re.UNICODE)
 
 	def getStopwords(self, path_to_stopwords):
 		sw = set()
@@ -123,8 +123,8 @@ class Helper:
 	def stem(self, text):
 		text = text.split()
 		for i in range(0, len(text)):
-			# text[i] = LancasterStemmer().stem(text[i])
-			text[i] = PorterStemmer().stem(text[i])
+			# text[i] = PorterStemmer().stem(text[i])
+			text[i] = LancasterStemmer().stem(text[i])
 		stemmedText = " ".join(text)
 		return stemmedText
 		return text

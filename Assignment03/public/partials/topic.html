@@ -16,10 +16,6 @@
 		<hr class="irrelevant" style="width: {{ getPercentage('irrelevant', 'floor') - 1 }}%; {{ checkIfZero('irrelevant') }}"/>
 	</div>
 	<div class="percentagePresentation">
-		<div class="percentageBox totalCount">
-			<div class="label total">Tweets</div>
-			<div class="percentage">{{ sentiments().total.count }}</div>
-		</div>
 		<div class="percentageBox">
 			<div class="label positive">Positive</div>
 			<div class="percentage">{{ getPercentage('positive', 'round') }}%</div>
@@ -27,6 +23,10 @@
 		<div class="percentageBox">
 			<div class="label negative">Negative</div>
 			<div class="percentage">{{ getPercentage('negative', 'round') }}%</div>
+		</div>
+		<div class="percentageBox totalCount">
+			<div class="label total">Tweets</div>
+			<div class="percentage">{{ sentiments().total.count }}</div>
 		</div>
 		<div class="percentageBox">
 			<div class="label neutral">Neutral</div>
@@ -45,11 +45,20 @@
 	</div>
 </div>
 
-<div ng-repeat="tweet in topTweets() | filter:tweetFilter" class="tweet">
+<div ng-repeat="tweet in topTweets() | filter:tweetFilter | orderBy:['-favorite_count','-retweet_count']" class="tweet">
 	<img ng-src="{{tweet.user.profile_image_url}}"/>
 	<div class="tweetContent">
 		<span class="userName">{{tweet.user.name}}</span>
 		<span class="tweetText">{{tweet.text}}</span>
 	</div>
-	<div class="labelDisplay">Classified as <span ng-class="tweet.predicted_sentiment">{{ tweet.predicted_sentiment }}</span></div>
+	<div class="labelDisplay">
+		<div class="tweetInfoCol">
+			<img src="img/retweet-icon.png"/>{{tweet.retweet_count}}
+		</div>
+		<div class="tweetInfoCol">
+			<img src="img/heart-icon.png"/>{{tweet.favorite_count}}
+		</div>
+		<div class="tweetInfoCol">
+			<img ng-src="img/{{tweet.predicted_sentiment}}-icon2.png"/><span ng-class="tweet.predicted_sentiment">{{ tweet.predicted_sentiment }}</span></div>
+		</div>
 </div>

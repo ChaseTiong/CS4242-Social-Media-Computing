@@ -61,3 +61,70 @@ def concatenateCSV(path_to_training_file, path_to_tweets, output_file):
 	    		'text': tweet['text'],
 	    		'sentiment': tweet['sentiment']
 	    		})
+
+def getStats(infile, outfile = False, classifierType = None):
+	f = open(infile, "r").read().split("\n")
+	reader = csv.reader( f, delimiter=',', quotechar='"', escapechar='\\' )
+	data = list(reader)
+	sentiments = []
+	for i in range(1, len(data)-1):
+		if data[i][1] not in sentiments:
+			sentiments.append(data[i][1])
+	sentiments = sorted(sentiments)
+
+	stat_variables = {}
+	for i in range(0, len(sentiments)):
+		stat_variables["true_"+sentiments[i]] = 0
+		stat_variables["false_"+sentiments[i]] = 0
+		stat_variables["num_"+sentiments[i]] = 0
+	stat_variables["num_correct"] = 0
+	stat_variables["num_false"] = 0
+	
+	if outfile:
+		o = open(outfile, 'w')
+		headers = ["Classifier", "Sentiment", "Total", "True", "False"]
+		writer = csv.DictWriter(o, fieldnames=headers)
+
+	for i in range(1, len(data)-1):
+		correct_sentiment = data[i][1]
+		predicted_sentiment = data[i][2]
+		stat_variables["num_"+correct_sentiment] += 1
+		if predicted_sentiment != correct_sentiment:
+			stat_variables["false_"+predicted_sentiment] += 1
+			stat_variables["num_false"] += 1
+		else:
+			stat_variables["true_"+correct_sentiment] += 1
+			stat_variables["num_correct"] += 1
+
+	print "%0-10s %11s %11s %10s" % ("Topic", "Precision", "Recall", "F1")
+
+	for i in range(0, len(sentiments)):
+		true = stat_variables["true_"+sentiments[i]]
+		false = stat_variables["false_"+sentiments[i]]
+		tot = stat_variables["num_"+sentiments[i]]
+
+		Precision = float(true)/(true+false)*100.0
+		Recall = float(true)/tot*100.0
+		F1 = 2*(Precision*Recall)/(Precision+Recall)
+		print "%-10.10s %10.2f%% %10.2f%% %10.2f%%" % (sentiments[i].capitalize(),Precision,Recall,F1)
+	
+	num_correct = stat_variables["num_correct"]
+	num_false = stat_variables["num_false"]
+	print "\n%-10.10s %10.2f%% %10i/%i" % ("Total Accuracy", float(num_correct)/float(num_correct+num_false)*100.0,	num_correct, num_correct+num_false)
+
+def saveSVMOutput(outfile, tweets, predictedLabels, correctLabels):
+	print "Saving outfile to "+outfile+"..."
+	o = open(outfile, 'w')
+	headers = ["Tweet", "Correct Sentiment", "Predicted Sentiment"]
+	writer = csv.DictWriter(o, fieldnames=headers)
+	writer.writeheader()
+
+	for i in range(0, len(predictedLabels)):
+		correct_label = correctLabels[i]
+		predicted_label = predictedLabels[i]
+		tweetText = tweets[i]
+		writer.writerow({
+			headers[0]: tweetText, 
+			headers[1]: correct_label,
+			headers[2]: predicted_label})
+	o.close()

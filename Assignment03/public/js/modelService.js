@@ -139,6 +139,7 @@ app.factory('Model', function ($http, $resource) {
 
 		$http(params).then(function success(response){
 			// Show original tweets instead of retweets
+			console.log(response.data);
 			for(s in response.data.statuses){
 				if(response.data.statuses[s].retweeted_status){
 					response.data.statuses[s] = response.data.statuses[s].retweeted_status;

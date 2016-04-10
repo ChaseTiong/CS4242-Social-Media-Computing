@@ -103,8 +103,10 @@ app.post("/api/login", function(req, res){
 });
 
 app.get('/api/tweets', function(req, res){
+
   console.log("Incoming request for ",req.query.q, " tweets");
   var params = {q: req.query.q, count:100, type:"popular", lang:"en"};
+
   twitterClient.get('search/tweets', params, function(error, tweets, response){
     // if (error) throw error;
     if(error){
@@ -113,39 +115,14 @@ app.get('/api/tweets', function(req, res){
       console.log("Fetched ",tweets.statuses.length, " tweets from twitter");
 
       if(tweets.statuses.length > 0){
-        console.log("Inserting into database...");
-        var query = "INSERT IGNORE INTO tweets(id, created_at, lang, favourite_count, retweet_count, text) VALUES ";
+
         var stringifiedTweets = []
-
         for (tweet in tweets.statuses){
-          if(tweets.statuses[tweet]["retweeted_status"] == undefined){
-            var currentTweet = tweets.statuses[tweet];
-          } else {
-            var currentTweet = tweets.statuses[tweet]["retweeted_status"];
+          if(tweets.statuses[tweet]["retweeted_status"] != undefined){
+            tweets.statuses[tweet] = tweets.statuses[tweet]["retweeted_status"];
           }
-
-          stringifiedTweets.push(JSON.stringify(currentTweet["text"]));
-
-          // console.log(JSON.stringify(currentTweet["text"]));
-
-          query += "("+currentTweet["id_str"]+",'"+new Date().toISOString(currentTweet["created_at"]).slice(0, 19).replace('T', ' ')+"','"+currentTweet["lang"]+"',"+currentTweet["favorite_count"]+","+currentTweet["retweet_count"]+","+dbConnection.escape(currentTweet["text"])+")";
-
-          if(tweet != (tweets.statuses.length-1)){
-            query += ",";
-          } else {
-            query += ";";
-          }
+          stringifiedTweets.push(JSON.stringify(tweets.statuses[tweet]["text"]));
         }
-
-
-        dbConnection.query(query, function(err, result){
-          if(err) {
-            console.log(query);
-            throw err;
-          }
-          console.log("Tweets successfully saved to database!");
-          // console.log(result);
-        });
 
         var options = {
           args: stringifiedTweets
@@ -154,22 +131,77 @@ app.get('/api/tweets', function(req, res){
         console.log("Classifying tweets...");
         PythonShell.run("python/classifyTweets.py", options, function(err, result){
           if(err) throw err;
-          tweets.labels = result;
           console.log("Tweets classified");
-          for(i in tweets.statuses){
+
+          tweets.labels = result;
+
+          var idNotIn = "(";
+          for(var i in tweets.statuses){
             tweets.statuses[i].predicted_sentiment = result[i];
+            idNotIn += tweets.statuses[i].id;
+
+            if(i == tweets.statuses.length-1){
+              idNotIn += ")";
+            } else {
+              idNotIn += ",";
+            }
           }
-          console.log("Returning ",tweets.statuses.length," tweets");
-          res.json(tweets);
+          insertToDb(tweets.statuses);
+
+          var complementaryTweetsQuery = "SELECT * FROM tweets WHERE `text` LIKE '%"+decodeURIComponent(req.query.q).replace(/\+/g,"%").replace(/"/g,"")+"%' AND sentiment IS NOT NULL AND id NOT IN "+idNotIn+" AND created_at >= subdate(now(), INTERVAL 1 DAY);";
+
+          // console.log(complementaryTweetsQuery);
+
+          dbConnection.query(complementaryTweetsQuery, function(err, compTweets){
+            if(err) throw err;
+            for(var i in compTweets){
+              compTweets[i]["user"] = {};
+              compTweets[i]["user"]["name"] = compTweets[i]["username"];
+              delete compTweets[i]["username"];
+              compTweets[i]["user"]["profile_image_url"] = compTweets[i]["profile_image_url"];
+              delete compTweets[i]["profile_image_url"];
+              compTweets[i]["favorite_count"] = compTweets[i]["favourite_count"];
+              delete compTweets[i]["favourite_count"];
+              compTweets[i]["predicted_sentiment"] = compTweets[i]["sentiment"];
+              delete compTweets[i]["sentiment"];
+
+              // console.log(compTweets[i]);
+
+              tweets.statuses.push(compTweets[i]);
+              tweets.labels.push(compTweets[i]["predicted_sentiment"]);
+            }
+            console.log("Returning ",tweets.statuses.length," tweets");
+            res.json(tweets);
+          });
+
         });  
       } else {
         res.json([]);
       }
     }
-    
-
   });
 });
+
+var insertToDb = function(tweets){
+  var query = "INSERT IGNORE INTO tweets(id, created_at, lang, favourite_count, retweet_count, text, sentiment, username, profile_image_url) VALUES ";
+  for(var i in tweets){
+    query += "("+tweets[i]["id_str"]+",'"+new Date().toISOString(tweets[i]["created_at"]).slice(0, 19).replace('T', ' ')+"','"+tweets[i]["lang"]+"',"+tweets[i]["favorite_count"]+","+tweets[i]["retweet_count"]+","+dbConnection.escape(tweets[i]["text"])+",'"+tweets[i]["predicted_sentiment"]+"',"+dbConnection.escape(tweets[i]["user"]["name"])+",'"+tweets[i]["user"]["profile_image_url"]+"')";
+    // console.log(tweets[i]["user"]["name"], tweets[i]["user"]["profile_image_url"]);
+    if(i != (tweets.length-1)){
+      query += ",";
+    } else {
+      query += ";";
+    }
+  }
+          
+  dbConnection.query(query, function(err, result){
+    if(err) {
+      console.log(query);
+      throw err;
+    }
+    console.log("Tweets successfully saved to database!");
+  });
+};
 
 app.get('/api/trending', function(req, res){
   var updateThreshold = 5400;

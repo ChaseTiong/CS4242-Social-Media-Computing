@@ -242,21 +242,31 @@ footer {
       width: 100%;
       display: block; }
   .tweet .labelDisplay {
-    font-size: initial;
     display: block;
     text-align: center;
     background-color: #F1EFEF;
     color: #3B4142;
-    padding: 2px;
+    padding: 5px;
     margin-top: 10px; }
-    .tweet .labelDisplay span.positive {
-      color: #158415; }
-    .tweet .labelDisplay span.negative {
-      color: #A93030; }
-    .tweet .labelDisplay span.neutral {
-      color: #B3B314; }
-    .tweet .labelDisplay span.irrelevant {
-      color: #969696; }
+    .tweet .labelDisplay img {
+      height: 10px;
+      width: auto;
+      margin-bottom: 2px;
+      border-radius: 0;
+      padding: 0px;
+      margin-right: 5px; }
+    .tweet .labelDisplay .tweetInfoCol {
+      font-size: initial;
+      width: 33%;
+      display: inline-block; }
+      .tweet .labelDisplay .tweetInfoCol span.positive {
+        color: #158415; }
+      .tweet .labelDisplay .tweetInfoCol span.negative {
+        color: #A93030; }
+      .tweet .labelDisplay .tweetInfoCol span.neutral {
+        color: #B3B314; }
+      .tweet .labelDisplay .tweetInfoCol span.irrelevant {
+        color: #969696; }
 
 #menu {
   position: absolute;
@@ -439,9 +449,13 @@ form.form {
     width: 80%; }
     .percentagePresentation .percentageBox {
       width: 20%;
+      vertical-align: middle;
       margin: 0; }
       .percentagePresentation .percentageBox.totalCount {
         width: 20%; } }
+.percentageBox.totalCount .percentage {
+  font-size: 2.5em; }
+
 /* Medium devices (desktops, 992px and up) */
 @media screen and (min-width: 992px) {
   .tweet {
