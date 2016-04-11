@@ -14,7 +14,6 @@ helper = helperClass.Helper("data/stopwords.txt")
 path_to_training_file = "data/training.csv"
 path_to_tweets = "data/Tweets"
 output_training_file = "data/output/outputTrainingFile.csv"
-# output_file = "data/Train/train.csv"
 
 path_to_testing_file = "data/testing.csv"
 output_testing_file = "data/output/outputTestingFile.csv"
@@ -64,7 +63,7 @@ labels.append(dictionary.translateSentiment("irrelevant"))
 print "Training model..."
 # Prepare SVM parameters
 params = svm_parameter()
-params.C = 10
+params.C = 1
 params.kernel_type = LINEAR
 
 # Prepare SVM problem

@@ -52,15 +52,16 @@ def concatenateCSV(path_to_training_file, path_to_tweets, output_file):
 	    writer = csv.DictWriter(output, fieldnames=fieldnames)
 	    writer.writeheader()
 	    for tweet in tweets:
-	    	writer.writerow({
-	    		'id':tweet['id'],
-	    		'created_at': tweet['created_at'],
-	    		'lang': tweet['lang'],
-	    		'favourite_count': tweet['favourite_count'],
-	    		'retweet_count': tweet['retweet_count'],
-	    		'text': tweet['text'],
-	    		'sentiment': tweet['sentiment']
-	    		})
+	    	if(tweet["lang"] == ("en") or True):
+		    	writer.writerow({
+		    		'id':tweet['id'],
+		    		'created_at': tweet['created_at'],
+		    		'lang': tweet['lang'],
+		    		'favourite_count': tweet['favourite_count'],
+		    		'retweet_count': tweet['retweet_count'],
+		    		'text': tweet['text'],
+		    		'sentiment': tweet['sentiment']
+		    		})
 
 def getStats(infile, outfile = False, classifierType = None):
 	f = open(infile, "r").read().split("\n")
